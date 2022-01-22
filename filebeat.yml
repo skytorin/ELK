@@ -1,0 +1,80 @@
+filebeat.inputs:
+
+- type: log
+  enabled: true
+  paths:
+    - 'C:\inetpub\logs\LogFiles\W3SVC25\*.log'
+  tags: ["IIS"] 
+- type: log
+  enabled: true
+  paths:
+    - 'C:\Site\dev-release-1.30.1.wio\logs\all\*.log'
+  tags: ["NEO_ALL"] 
+- type: log
+  enabled: true
+  paths:
+    - 'C:\Site\dev-release-1.30.1.wio\logs\Info\*.log'
+  tags: ["NEO_INFO"]
+- type: log
+  enabled: true
+  paths:
+    - 'C:\Site\dev-release-1.30.1.wio\logs\Fatal\*.log'
+  tags: ["NEO_FATAL"]
+  multiline.type: pattern
+  multiline.pattern: '^[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}.'
+  multiline.negate: true
+  multiline.match: after
+- type: log
+  enabled: true
+  paths:
+    - 'C:\Site\dev-release-1.30.1.wio\logs\Error\*.log'
+  tags: ["NEO_ERROR"]
+  multiline.type: pattern
+  multiline.pattern: '^[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}.'
+  multiline.negate: true
+  multiline.match: after
+- type: log
+  enabled: true
+  paths:
+    - 'C:\Site\dev-release-1.30.1.wio\logs\Warn\*.log'
+  tags: ["NEO_WARN"]
+  multiline.type: pattern
+  multiline.pattern: '^[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}.'
+  multiline.negate: true
+  multiline.match: after
+- type: log
+  enabled: true
+  paths:
+    - 'C:\Site\dev-release-1.30.1.wio\logs\Trace\*.log'
+  tags: ["NEO_TRACE"]
+- type: log
+  enabled: true
+  paths:
+    - 'C:\Site\dev-release-1.30.1.wio\logs\Debug\*.log'
+  tags: ["NEO_DEBUG"]
+
+- type: filestream
+  enabled: false
+  paths:
+    - /var/log/*.log
+
+filebeat.config.modules:
+  path: ${path.config}/modules.d/*.yml
+
+  reload.enabled: false
+
+setup.template.settings:
+  index.number_of_shards: 1
+
+setup.kibana:
+
+output.logstash:
+  hosts: ["192.168.8.11:5045"]
+
+processors:
+  - add_host_metadata:
+      when.not.contains.tags: forwarded
+  - add_cloud_metadata: ~
+  - add_docker_metadata: ~
+  - add_kubernetes_metadata: ~
+
