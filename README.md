@@ -87,7 +87,7 @@ systemctl restart kibana.service
 vi /etc/kibana/kibana.yml
 ```
 
-## Установка Logstash:
+## Установка Logstash
 Добавляем публичный ключ
 ```bash
 wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | apt-key add -
